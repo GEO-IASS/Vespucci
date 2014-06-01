@@ -41,7 +41,13 @@ MapViewer::~MapViewer()
 }
 
 
-
+void MapViewer::closeEvent(QCloseEvent * event)
+{
+    //Due to a memory leak it would take too much effort to fix, I have decided
+    // to prevent the leak by keeping this window open at all times
+    event->ignore();
+    this->showMinimized();
+}
 
 void MapViewer::on_actionInterpolate_triggered()
 {

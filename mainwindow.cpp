@@ -41,9 +41,30 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    int response = QMessageBox::question(this,
+                                         "Exit?",
+                                         "Are you sure you want to exit?");
+
+    if (response == QMessageBox::Yes) {
+        event->accept();
+        qApp->exit();
+    }
+
+    else {
+        event->ignore();
+    }
+}
+
 void MainWindow::on_actionExit_triggered()
 {
-    qApp->closeAllWindows();
+    int response = QMessageBox::question(this,
+                                         "Exit?",
+                                         "Are you sure you want to exit?");
+
+    if (response == QMessageBox::Yes)
+        qApp->exit();
 }
 
 void MainWindow::on_actionImport_Dataset_from_File_triggered()

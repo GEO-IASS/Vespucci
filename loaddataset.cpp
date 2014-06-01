@@ -99,11 +99,11 @@ void LoadDataset::on_buttonBox_accepted()
         QFile inputfile(filename);
         inputfile.open(QIODevice::ReadOnly);
         QTextStream inputstream(&inputfile);
-        SpecMap data(inputstream, workspace->main_window(), directory_);
+        QSharedPointer<SpecMap> data(new SpecMap(inputstream,
+                                                 workspace->main_window(),
+                                                 directory_));
         inputfile.close();
-
-        data.SetName(name);
-
+        data.data()->SetName(name);
         workspace->AddDataset(data);
         workspace->set_directory(file_info.dir().absolutePath());
 

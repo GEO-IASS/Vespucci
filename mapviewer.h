@@ -33,6 +33,8 @@ class MapViewer;
 class MapViewer : public QMainWindow
 {
     Q_OBJECT
+protected:
+    void closeEvent(QCloseEvent *event);
 
 public:
     MapViewer(QString name, QString *directory, MapData *parent);

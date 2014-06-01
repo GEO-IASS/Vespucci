@@ -34,7 +34,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent, VespucciWorkspace *ws);
     ~MainWindow();
-
+protected:
+    void closeEvent(QCloseEvent *event);
 private slots:
     void on_actionExit_triggered();
 

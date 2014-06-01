@@ -46,11 +46,11 @@ public:
             colvec results,
             SpecMap *parent,
             QString *directory,
-            QCPColorGradient gradient);
-
+            QCPColorGradient gradient, int source_index);
+    ~MapData();
     QString name();
     QString type();
-    QString source_index();
+    int source_index();
 
     void set_type(QString type);
     void set_name(QString name, QString type);
@@ -83,6 +83,8 @@ public:
     void ShowColorScale(bool enabled);
     void ShowAxes(bool enabled);
 
+    void RemoveThis();
+
     bool savePng(const QString & fileName,
                  int width = 0,
                  int height = 0,
@@ -114,7 +116,7 @@ private:
 
     QString name_; //Name, this is displayed in the QListView
     QString type_; //Short description of type.  set by subclass constructor.
-    QString source_index_; //List index of this
+    int source_index_; //List index of this
 
     //QCPColorMapData map_data_;
 
@@ -134,6 +136,7 @@ private:
     int value_size_; //size of y (number of unique y values)
 
     QCPColorGradient gradient_;
+    QCPColorScale *new_color_scale_;
 
     QString *directory_;
 

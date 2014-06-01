@@ -27,7 +27,8 @@ MapData::MapData(QString x_axis_description,
                  colvec results,
                  SpecMap *parent,
                  QString *directory,
-                 QCPColorGradient gradient)
+                 QCPColorGradient gradient,
+                 int source_index)
 {
     name_ = parent->name();
     directory_ = directory;
@@ -54,8 +55,20 @@ MapData::MapData(QString x_axis_description,
     x_axis_description_ = x_axis_description;
     y_axis_description_ = y_axis_description;
     dataset_ = parent;
+    source_index_ = source_index;
 }
 
+///
+/// \brief MapData::~MapData
+///Deletes everything the new keyword is used on in this object.
+/// Destructor triggered when this is removed from SpecMap list.
+MapData::~MapData()
+{
+    delete map_display_;
+    delete map_;
+    delete spectrum_display_;
+    delete new_color_scale_;
+}
 
 QString MapData::name()
 {
@@ -67,7 +80,7 @@ QString MapData::type()
     return type_;
 }
 
-QString MapData::source_index()
+int MapData::source_index()
 {
     return source_index_;
 }
@@ -108,10 +121,11 @@ void MapData::CreateImage(QCPColorGradient color_scheme, bool interpolation)
     map_->rescaleDataRange(true);
     map_qcp_->rescaleAxes(true);
 
-    QCPColorScale *color_scale = new QCPColorScale(map_qcp_);
-    color_scale->setGradient(color_scheme);
-    color_scale->setDataRange(map_->dataRange());
-    map_qcp_->plotLayout()->addElement(0, 1, color_scale);
+    new_color_scale_ = new QCPColorScale(map_qcp_);
+    new_color_scale_->setGradient(color_scheme);
+    new_color_scale_->setDataRange(map_->dataRange());
+    map_qcp_->plotLayout()->addElement(0, 1, new_color_scale_);
+
     color_scale_ = map_qcp_->plotLayout()->element(0, 1);
 
     map_->setInterpolate(interpolation);
@@ -231,4 +245,14 @@ bool MapData::saveTiff(const QString &fileName, int width, int height, double sc
     map_qcp_->setBackground(map_display_->palette().window());
     map_qcp_->replot();
     return success;
+}
+
+///
+/// \brief MapData::RemoveThis
+///Triggers the SpecMap object to remove this from the list.  Since SpecMap
+/// stores MapData objects as shared pointers, and only one object (the map list)
+/// contains this pointer, this removal results in this object being deleted.
+void MapData::RemoveThis()
+{
+    dataset_->RemoveMapAt(source_index_);
 }

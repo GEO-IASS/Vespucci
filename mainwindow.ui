@@ -107,16 +107,14 @@
      <string>Data</string>
     </property>
     <widget class="QMenu" name="menuData_Pre_Processing">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
      <property name="title">
       <string>Data Pre-Processing</string>
      </property>
-     <addaction name="actionNormalize"/>
-     <addaction name="actionFilter"/>
+     <addaction name="actionFilter_Derivatize"/>
+     <addaction name="actionNormalize_Standardize"/>
+     <addaction name="actionSubtract_Background"/>
+     <addaction name="actionCorrect_Baseline"/>
     </widget>
-    <addaction name="actionClose_Dataset"/>
     <addaction name="actionExport_Dataset_As"/>
     <addaction name="actionConcatenate_Datasets"/>
     <addaction name="separator"/>
@@ -149,14 +147,6 @@
    <addaction name="menuData"/>
    <addaction name="menuMap"/>
    <addaction name="menuHelp"/>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionLoad_Workspace">
@@ -211,25 +201,16 @@
    </property>
   </action>
   <action name="actionClose_Dataset">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="text">
     <string>Close Dataset</string>
    </property>
   </action>
   <action name="actionExport_Dataset_As">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="text">
     <string>Export Dataset As...</string>
    </property>
   </action>
   <action name="actionConcatenate_Datasets">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="text">
     <string>Concatenate Datasets</string>
    </property>
@@ -261,9 +242,6 @@
    </property>
   </action>
   <action name="actionDelete_Map">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="text">
     <string>Delete Map</string>
    </property>
@@ -282,9 +260,6 @@
    </property>
   </action>
   <action name="actionPartial_Least_Squares">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="text">
     <string>Partial Least Squares</string>
    </property>
@@ -313,14 +288,27 @@
     <string>Agglomerative Hierarchical Clustering</string>
    </property>
   </action>
-  <action name="actionNormalize">
+  <action name="actionFilter_Derivatize">
    <property name="text">
-    <string>Normalize</string>
+    <string>Filter/Derivatize</string>
    </property>
   </action>
-  <action name="actionFilter">
+  <action name="actionNormalize_Standardize">
    <property name="text">
-    <string>Filter</string>
+    <string>Normalize/Standardize</string>
+   </property>
+  </action>
+  <action name="actionSubtract_Background">
+   <property name="text">
+    <string>Subtract Background</string>
+   </property>
+  </action>
+  <action name="actionCorrect_Baseline">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Correct Baseline</string>
    </property>
   </action>
  </widget>
