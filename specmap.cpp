@@ -35,6 +35,45 @@ SpecMap::~SpecMap()
     delete principal_components_data_;
 }
 
+
+///
+/// \brief SpecMap::SpecMap
+/// \param binary_file_name file name of the binary
+/// \param main_window the main window
+/// \param directory the working directory
+/// This constructor loads a previously saved dataset.  The dataset is saved
+/// as an armadillo binary in the same format as the long text.
+///
+SpecMap::SpecMap(QString binary_file_name, QMainWindow *main_window, QString *directory)
+{
+    //Set up variables unrelated to hyperspectral data:
+    map_list_widget_ = main_window->findChild<QListWidget *>("mapsListWidget");
+    map_loading_count_ = 0;
+    principal_components_calculated_ = false;
+    partial_least_squares_calculated_ = false;
+    z_scores_calculated_ = false;
+    directory_ = directory;
+
+    mat input_data;
+    input_data.load(binary_file_name.toStdString());
+    int cols = input_data.n_cols;
+    int rows = input_data.n_rows;
+    int wavelength_size = cols - 2;
+    int spatial_size = rows - 1;
+    x_.set_size(spatial_size);
+    y_.set_size(spatial_size);
+    wavelength_.set_size(wavelength_size);
+    spectra_.set_size(spatial_size, wavelength_size);
+
+    wavelength_ = input_data(0, span(2, cols));
+    x_ = input_data(span(1, rows), 0);
+    y_ = input_data(span(1, rows), 1);
+    spectra_ = input_data(span(1, rows), span(2, cols));
+}
+
+
+
+
 ///
 /// \brief SpecMap::SpecMap
 /// Main function for processing data from text files to create SpecMap objects.
@@ -119,11 +158,15 @@ SpecMap::SpecMap(QTextStream &inputstream, QMainWindow *main_window, QString *di
         for (j=0; j<columns; ++j){
             spectra_(i,j) = spectra_string_list.at(j).toDouble();
         }
+        if (progress.wasCanceled()){
+            constructor_canceled_ = true;
+            return;
+        }
         progress.setValue(i);
     }
     seconds = timer.toc();
+    constructor_canceled_ = false;
     cout << "Reading x, y, and spectra took " << seconds << " s." << endl;
-    QMessageBox::information(0, "End of SpecMap constructor", "Text");
 }
 
 // PRE-PROCESSING FUNCTIONS //
@@ -179,6 +222,21 @@ void SpecMap::ZScoreNormalize()
     z_scores_calculated_ = true;
 }
 
+void SpecMap::SubtractBackground(mat background)
+{
+    if (background.n_cols != spectra_.n_cols){
+        QMessageBox::warning(0,
+                             "Improper Dimensions!",
+                             "The background spectrum has a different number of"
+                             " points than the map data."
+                             " No subtraction can be performed");
+        return;
+    }
+    else{
+        spectra_.each_row() -= background.row(0);
+    }
+}
+
 // MAPPING FUNCTIONS //
 
 ///
@@ -196,8 +254,6 @@ void SpecMap::Univariate(int min,
                          QString value_method,
                          int gradient_index)
 {
-
-    cout << "SpecMap::Univariate" << endl;
 
     unsigned int size = x_.n_elem;
     unsigned int i;
@@ -221,11 +277,35 @@ void SpecMap::Univariate(int min,
     else{
         // Makes an intensity map
         map_type = "1-Region Univariate (Intensity)";
-        cout << "line 157" <<endl;
-        for (i=0; i<size; ++i){
-            region = spectra_(i, span(min, max));
-            results(i)=region.max();
+        if (z_scores_calculated_){
+            rowvec region_temp;
+            double peak_height;
+            double peak_height_temp;
+            mat spectra_temp(spectra_.n_rows, spectra_.n_cols);
+            for (i = 0; i < spectra_.n_elem; ++i)
+                spectra_temp(i) = fabs(spectra_(i));
+
+            for (i = 0; i < size; ++i){
+                region = spectra_(i, span(min, max));
+                region_temp = spectra_temp(i, span(min, max));
+                peak_height_temp = region_temp.max();
+                peak_height = region.max();
+
+                // If the maxes aren't equal, then we know the peak is negative
+                if (peak_height_temp != peak_height)
+                    peak_height = peak_height_temp * -1.0;
+
+                results(i) = peak_height;
+            }
         }
+        else{
+            for (i=0; i<size; ++i){
+                region = spectra_(i, span(min, max));
+                results(i)=region.max();
+            }
+
+        }
+
     }
 
     QSharedPointer<MapData> map(new MapData(x_axis_description_,
@@ -654,10 +734,9 @@ int SpecMap::map_loading_count()
 ///
 void SpecMap::RemoveMapAt(int i)
 {
-    QString name = map_names_.at(i);
+    QMessageBox::information(0, "Debug", "SpecMap::RemoveMapAt()");
     QListWidgetItem *item = map_list_widget_->takeItem(i);
     maps_.removeAt(i); //map falls out of scope and memory freed!
-    map_names_.removeAt(i);
     map_list_widget_->removeItemWidget(item);
 }
 
@@ -773,4 +852,38 @@ QCPColorGradient SpecMap::GetGradient(int gradient_number)
     case 39: return QCPColorGradient::cbCluster;
     default: return QCPColorGradient::gpCold;
     }
+}
+
+bool SpecMap::ConstructorCancelled()
+{
+    return constructor_canceled_;
+}
+
+mat SpecMap::AverageSpectrum(bool stats)
+{
+    mat spectrum;
+    int size = spectra_.n_cols;
+    double spec_mean;
+    double spec_std;
+
+    if (stats)
+        spectrum.set_size(2, size);
+    else
+        spectrum.set_size(1, size);
+
+    for (int j = 0; j < size; ++j){
+        spec_mean = mean(spectra_.col(j));
+        spectrum(0, j) = spec_mean;
+        if (stats){
+            spec_std = stddev(spectra_.col(j));
+            spectrum(1, j) = spec_std;
+        }
+    }
+
+    return spectrum;
+}
+
+bool SpecMap::principal_components_calculated()
+{
+    return principal_components_calculated_;
 }

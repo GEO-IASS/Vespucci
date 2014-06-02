@@ -51,6 +51,24 @@ private slots:
 
     void on_actionPrincipal_Components_Analysis_triggered();
 
+    void on_actionNormalize_Standardize_triggered();
+
+    void on_actionSubtract_Background_triggered();
+
+    void on_actionSpectra_triggered();
+
+    void on_actionAverage_Spectra_triggered();
+
+    void on_actionAverage_Spectra_with_Abcissa_triggered();
+
+    void on_actionSpatial_Data_triggered();
+
+    void on_actionSpectral_Abcissa_triggered();
+
+    void on_actionAll_Data_triggered();
+
+    void on_actionPrincipal_Component_Statistics_triggered();
+
 private:
     Ui::MainWindow *ui;
     VespucciWorkspace *workspace;

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>338</height>
+    <height>328</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -115,10 +115,24 @@
      <addaction name="actionSubtract_Background"/>
      <addaction name="actionCorrect_Baseline"/>
     </widget>
-    <addaction name="actionExport_Dataset_As"/>
-    <addaction name="actionConcatenate_Datasets"/>
-    <addaction name="separator"/>
+    <widget class="QMenu" name="menuExport_Dataset_Elements">
+     <property name="title">
+      <string>Export Dataset Elements</string>
+     </property>
+     <addaction name="actionSpectra"/>
+     <addaction name="actionAverage_Spectra"/>
+     <addaction name="actionAverage_Spectra_with_Abcissa"/>
+     <addaction name="actionSpatial_Data"/>
+     <addaction name="actionSpectral_Abcissa"/>
+     <addaction name="separator"/>
+     <addaction name="actionAll_Data"/>
+     <addaction name="separator"/>
+     <addaction name="actionPrincipal_Component_Statistics"/>
+    </widget>
     <addaction name="menuData_Pre_Processing"/>
+    <addaction name="separator"/>
+    <addaction name="actionConcatenate_Datasets"/>
+    <addaction name="menuExport_Dataset_Elements"/>
    </widget>
    <widget class="QMenu" name="menuMap">
     <property name="title">
@@ -165,7 +179,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Save Workspace...</string>
+    <string>Save Workspace</string>
    </property>
    <property name="toolTip">
     <string>Save current workspace (all datasets and created maps) as HDF5 file</string>
@@ -205,12 +219,10 @@
     <string>Close Dataset</string>
    </property>
   </action>
-  <action name="actionExport_Dataset_As">
-   <property name="text">
-    <string>Export Dataset As...</string>
-   </property>
-  </action>
   <action name="actionConcatenate_Datasets">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Concatenate Datasets</string>
    </property>
@@ -242,6 +254,9 @@
    </property>
   </action>
   <action name="actionDelete_Map">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Delete Map</string>
    </property>
@@ -309,6 +324,44 @@
    </property>
    <property name="text">
     <string>Correct Baseline</string>
+   </property>
+  </action>
+  <action name="actionSpectra">
+   <property name="text">
+    <string>Spectra</string>
+   </property>
+  </action>
+  <action name="actionSpatial_Data">
+   <property name="text">
+    <string>Spatial Data</string>
+   </property>
+  </action>
+  <action name="actionSpectral_Abcissa">
+   <property name="text">
+    <string>Spectral Abcissa</string>
+   </property>
+  </action>
+  <action name="actionAll_Data">
+   <property name="text">
+    <string>All Data</string>
+   </property>
+  </action>
+  <action name="actionAverage_Spectra">
+   <property name="text">
+    <string>Average Spectra</string>
+   </property>
+  </action>
+  <action name="actionAverage_Spectra_with_Abcissa">
+   <property name="text">
+    <string>Average Spectra (with Abcissa)</string>
+   </property>
+  </action>
+  <action name="actionPrincipal_Component_Statistics">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Principal Component Statistics</string>
    </property>
   </action>
  </widget>

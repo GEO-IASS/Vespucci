@@ -72,7 +72,6 @@ void UnivariateDialog::on_buttonBox_accepted()
     QString value_method = value_method_selector_->currentText();
 
     int color_index = color_selector_->currentIndex();
-    QMessageBox::information(0, "Debug Notification", "Call to SpecMap::Univariate()");
     data_->Univariate(min, max, name, value_method, color_index);
 
 }

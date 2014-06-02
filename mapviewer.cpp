@@ -43,8 +43,20 @@ MapViewer::~MapViewer()
 
 void MapViewer::closeEvent(QCloseEvent * event)
 {
-    //Due to a memory leak it would take too much effort to fix, I have decided
-    // to prevent the leak by keeping this window open at all times
+    // the call to SpecMap::RemoveMapAt() results in program crashing
+ /*
+    int response = QMessageBox::question(this,
+                                         "Close Map?",
+                                         "Are you sure you want to close this"
+                                         " map?  Map will be deleted.");
+    if (response == QMessageBox::Yes){
+        event->accept();
+        parent_->RemoveThis();
+    }
+    else{
+        event->ignore();
+    }
+    */
     event->ignore();
     this->showMinimized();
 }

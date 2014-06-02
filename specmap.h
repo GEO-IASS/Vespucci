@@ -40,6 +40,7 @@ class SpecMap
 public:
     SpecMap();
     SpecMap(QTextStream& inputstream, QMainWindow *main_window, QString *directory);
+    SpecMap(QString binary_file_name, QMainWindow *main_window, QString *directory);
     ~SpecMap();
     // PRE-PROCESSING FUNCTIONS //
     // Normalization functions
@@ -50,6 +51,7 @@ public:
 
     //Spectral Pre-processing
 
+    void SubtractBackground(mat background);
     void SavitzkyGolay();
     void Derivitize();
     void SingularValue();
@@ -120,6 +122,8 @@ public:
     colvec y();
     mat spectra();
     const QString name();
+    bool principal_components_calculated();
+    PrincipalComponentsData *principal_components_data();
 
     void SetName(QString new_name);
 
@@ -142,6 +146,10 @@ public:
     QCPRange PointSpectrumRange(int i);
 
     QCPColorGradient GetGradient(int gradient_number);
+
+    bool ConstructorCancelled();
+    mat AverageSpectrum(bool stats);
+
 
 private:
     rowvec wavelength_;
@@ -170,6 +178,8 @@ private:
     bool z_scores_calculated_;
     bool principal_components_calculated_;
     bool partial_least_squares_calculated_;
+
+    bool constructor_canceled_;
 };
 
 #endif // SPECMAP_H

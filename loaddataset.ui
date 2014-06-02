@@ -242,6 +242,11 @@
          <string>Thermo Galactic .spc</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Vespucci Dataset</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item row="4" column="0">

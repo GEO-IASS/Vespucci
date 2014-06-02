@@ -16,9 +16,6 @@ TEMPLATE = app
 INCLUDEPATH += "C:/Libraries/armadillo-4.300.6/include"
 DEPENDPATH += "C:/Libraries/armadillo-4.300.6/include"
 
-INCLUDEPATH += "C:/Program Files/HDF_Group/HDF5/1.8.13/include"
-DEPENDPATH += "C:/Program Files/HDF_Group/HDF5/1.8.13/include"
-
 SOURCES += main.cpp\
         mainwindow.cpp \
     qcustomplot.cpp \
@@ -69,13 +66,3 @@ LIBS += -L$$PWD/../../../../../Libraries/OpenBLAS-v0.2.8-x86_64-Win/lib/ -llibop
 
 INCLUDEPATH += $$PWD/../../../../../Libraries/OpenBLAS-v0.2.8-x86_64-Win/include
 DEPENDPATH += $$PWD/../../../../../Libraries/OpenBLAS-v0.2.8-x86_64-Win/include
-
-
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Program Files/HDF_Group/HDF5/1.8.13/lib/ -lhdf5
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Program Files/HDF_Group/HDF5/1.8.13/lib/ -lhdf5d
-
-INCLUDEPATH += $$PWD/../../../../../Program Files/HDF_Group/HDF5/1.8.13/include
-DEPENDPATH += $$PWD/../../../../../Program Files/HDF_Group/HDF5/1.8.13/include
-
-CONFIG += console

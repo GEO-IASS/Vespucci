@@ -51,7 +51,9 @@ void LoadDataset::on_browseButton_clicked()
 
     filename = QFileDialog::getOpenFileName(this, tr("Open Data File"),
                                             workspace->directory(),
-                                            tr("Text Files (*.txt);; SPC Files (*.spc);;"));
+                                            tr("Text Files (*.txt);;"
+                                               "SPC Files (*.spc);;"
+                                               "Vespucci Dataset Files (*.vds);;"));
     filename_line_edit->setText(filename);
 
 }
@@ -96,19 +98,36 @@ void LoadDataset::on_buttonBox_accepted()
     }
 
     if (warning_response == QMessageBox::Ok && file_info.exists()){
-        QFile inputfile(filename);
-        inputfile.open(QIODevice::ReadOnly);
-        QTextStream inputstream(&inputfile);
-        QSharedPointer<SpecMap> data(new SpecMap(inputstream,
-                                                 workspace->main_window(),
-                                                 directory_));
-        inputfile.close();
-        data.data()->SetName(name);
-        workspace->AddDataset(data);
-        workspace->set_directory(file_info.dir().absolutePath());
+        if (file_info.suffix() == "txt"){
+            QFile inputfile(filename);
+            inputfile.open(QIODevice::ReadOnly);
+            QTextStream inputstream(&inputfile);
+            QSharedPointer<SpecMap> data(new SpecMap(inputstream,
+                                                     workspace->main_window(),
+                                                     directory_));
+            inputfile.close();
+            if (!data->ConstructorCancelled()){
+                data.data()->SetName(name);
+                workspace->AddDataset(data);
+                workspace->set_directory(file_info.dir().absolutePath());
+            }
+        }
+
+        if (file_info.suffix() == "vds"){
+            QMessageBox::critical(this, "Feature not Implemented", "This file type is not supported yet.");
+            return;
+            //QSharedPointer<SpecMap> data(new SpecMap(filename,
+            //                                         workspace->main_window(),
+            //                                         directory_));
+            //if (!data->ConstructorCancelled()){
+            //    data.data()->SetName(name);
+            //    workspace->AddDataset(data);
+            //    workspace->set_directory(file_info.dir().absolutePath());
+            //}
+        }
+
 
     }
-
 }
 
 
